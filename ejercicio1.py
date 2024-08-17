@@ -1,0 +1,7 @@
+x= float(input("digite un numero: "))
+y= float(input("digite otro numero: "))
+z= float(input("digite otro numero: "))
+mayor=max(x,y,z)
+menor=min(x,y,z)
+print("el numero mayor es",mayor)
+print("el numero menor es",menor)
