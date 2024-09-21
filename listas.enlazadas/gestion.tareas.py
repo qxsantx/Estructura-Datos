@@ -31,8 +31,7 @@ class ListaDeTareas:
                 actual = actual.siguiente
             actual.siguiente = nueva_tarea
         
-        # Imprimimos solo una vez después de agregar la tarea, ya sea en el inicio o al final
-        print(f"{tarea.tarea} ha sido agregada a la lista.")
+            print(f"{tarea.tarea} ha sido agregada a la lista.")
 
     def mostrar_tareas(self):
         if self.cabeza is None:
@@ -51,7 +50,7 @@ class ListaDeTareas:
         
         actual = self.cabeza
         while actual is not None:
-            if actual.tarea.tarea == nombre_tarea:  # Comparamos por el nombre de la tarea
+            if actual.tarea.tarea == nombre_tarea:
                 return actual.tarea
             actual = actual.siguiente
         
@@ -62,20 +61,20 @@ class ListaDeTareas:
             print("No hay tareas para eliminar.")
             return False
         
-        if self.cabeza.tarea.tarea == nombre_tarea:  # Si la tarea a eliminar es la primera
+        if self.cabeza.tarea.tarea == nombre_tarea:
             print(f"Tarea '{self.cabeza.tarea.tarea}' completada y eliminada.")
             self.cabeza = self.cabeza.siguiente
             return True
         
         actual = self.cabeza
         while actual.siguiente is not None:
-            if actual.siguiente.tarea.tarea == nombre_tarea:  # Buscamos la tarea
+            if actual.siguiente.tarea.tarea == nombre_tarea:
                 print(f"Tarea '{actual.siguiente.tarea.tarea}' completada y eliminada.")
                 actual.siguiente = actual.siguiente.siguiente
                 return True
             actual = actual.siguiente
         
-        print(f"Tarea '{nombre_tarea}' no encontrada para eliminar.")  # Mensaje claro si no se encuentra
+        print(f"Tarea '{nombre_tarea}' no encontrada para eliminar.")
         return False
 
 def agregar_tarea_a_la_lista():
@@ -88,7 +87,9 @@ def agregar_tarea_a_la_lista():
 
         descripcion = input("Ingrese la descripción de la tarea: ")
         prioridad = int(input("Ingrese el nivel de prioridad (1 es alto, 2 es mediano, 3 es bajo): "))
-        fecha_vencimiento = input("Ingrese la fecha de vencimiento (ejemplo: 2024-09-30): ")
+        fecha_vencimiento = input("Ingrese la fecha de vencimiento (ejemplo: 01/12/2024): ")
+
+        print("Se agrego correctamente")
 
         nueva_tarea = Tarea(descripcion, prioridad, fecha_vencimiento, tarea_nombre)
 
@@ -98,10 +99,10 @@ def agregar_tarea_a_la_lista():
 
 def buscar_y_eliminar_en_bucle(lista_tareas):
     while True:
-        print("\nTareas actuales:")
+        print("Tareas actuales:")
         lista_tareas.mostrar_tareas()
 
-        nombre_tarea = input("\nIngrese el nombre de la tarea a buscar y eliminar (o 'salir' para terminar): ")
+        nombre_tarea = input("Ingrese el nombre de la tarea a buscar y eliminar (o 'salir' para terminar): ")
         if nombre_tarea.lower() == 'salir':
             break
 
@@ -120,5 +121,5 @@ lista_tareas = agregar_tarea_a_la_lista()
 
 buscar_y_eliminar_en_bucle(lista_tareas)
 
-print("\nTareas restantes:")
+print("Tareas restantes:")
 lista_tareas.mostrar_tareas()
