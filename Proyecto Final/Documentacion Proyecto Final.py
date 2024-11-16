@@ -115,11 +115,10 @@ class ReproductorMusica:
     """
     Clase principal del reproductor de música.
     
-    Implementa la funcionalidad core del reproductor, incluyendo:
+    Implementa la funcionalidad basica del reproductor, incluyendo:
     - Gestión de playlist
     - Control de reproducción
     - Integración con sistema de recomendaciones
-    - Manejo de historial
     """
 
     def __init__(self):
@@ -137,7 +136,7 @@ class ReproductorMusica:
         """
         Agrega una nueva canción al final de la playlist.
 
-        Args:
+        Args(argumentos):
             titulo: Título de la canción
             artista: Nombre del artista
             genero: Género musical
