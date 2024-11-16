@@ -1,63 +1,189 @@
-class Nodo:
-    def __init__(self, pregunta=None, diagnostico=None):
-        self.pregunta = pregunta  # Pregunta en nodos internos
-        self.diagnostico = diagnostico  # Diagnóstico en nodos hoja
-        self.izquierda = None  # Respuesta "No"
-        self.derecha = None    # Respuesta "Sí"
-        
-class ArbolDiagnostico:
+from typing import Optional, List
+import random
+
+class Cancion:
+    def __init__(self, titulo: str, artista: str, genero: str, duracion: int):
+        self.titulo = titulo
+        self.artista = artista
+        self.genero = genero
+        self.duracion = duracion  # duración en segundos
+        self.siguiente = None
+        self.anterior = None
+    
+    def __str__(self):
+        return f"{self.titulo} - {self.artista} ({self.genero})"
+
+class SistemaRecomendacion:
     def __init__(self):
-        self.raiz = self.construir_arbol()
+        # Base de datos simulada de canciones para recomendaciones
+        self.base_canciones = [
+            Cancion("We Will Rock You", "Queen", "Rock", 128),
+            Cancion("Don't Stop Me Now", "Queen", "Rock", 298),
+            Cancion("Beat It", "Michael Jackson", "Pop", 258),
+            Cancion("Billie Jean", "Michael Jackson", "Pop", 294),
+            Cancion("Creep", "Radiohead", "Rock", 213),
+            Cancion("Monastery", "Feid", "Reggaeton", 212),
+            Cancion("Shape of You", "Ed Sheeran", "Pop", 234),
+            Cancion("Que hay de malo", "Jerry Rivera", "Salsa", 320)
+        ]
     
-    def construir_arbol(self):
-        # Crear el árbol de decisión médica
-        raiz = Nodo(pregunta="¿Tiene fiebre?")
+    def recomendar_canciones(self, cancion_actual: Cancion, historial: List[Cancion]) -> List[Cancion]:
+        """
+        Implementa un sistema simple de recomendación basado en género y artista
+        """
+        recomendaciones = []
         
-        # Rama izquierda (sin fiebre)
-        raiz.izquierda = Nodo(pregunta="¿Tiene dolor de cabeza?")
-        raiz.izquierda.izquierda = Nodo(pregunta="¿Tiene fatiga?")
-        raiz.izquierda.izquierda.izquierda = Nodo(diagnostico="Posible estrés. Recomendación: Descanso y técnicas de relajación.")
-        raiz.izquierda.izquierda.derecha = Nodo(diagnostico="Posible falta de sueño. Recomendación: Mejorar hábitos de sueño.")
-        raiz.izquierda.derecha = Nodo(pregunta="¿La luz le molesta?")
-        raiz.izquierda.derecha.izquierda = Nodo(diagnostico="Posible tensión. Recomendación: Analgésicos y descanso.")
-        raiz.izquierda.derecha.derecha = Nodo(diagnostico="Posible migraña. Recomendación: Consultar neurólogo.")
+        # Buscar canciones del mismo género
+        for cancion in self.base_canciones:
+            if (cancion.genero == cancion_actual.genero or 
+                cancion.artista == cancion_actual.artista) and \
+                cancion.titulo != cancion_actual.titulo and \
+                cancion not in historial:
+                recomendaciones.append(cancion)
         
-        # Rama derecha (con fiebre)
-        raiz.derecha = Nodo(pregunta="¿Tiene tos?")
-        raiz.derecha.izquierda = Nodo(pregunta="¿Tiene dolor muscular?")
-        raiz.derecha.izquierda.izquierda = Nodo(diagnostico="Posible infección viral leve. Recomendación: Reposo y abundante líquido.")
-        raiz.derecha.izquierda.derecha = Nodo(diagnostico="Posible gripe. Recomendación: Reposo, antipiréticos y consulta médica.")
-        raiz.derecha.derecha = Nodo(pregunta="¿Tiene dificultad para respirar?")
-        raiz.derecha.derecha.izquierda = Nodo(diagnostico="Posible bronquitis. Recomendación: Consulta médica urgente.")
-        raiz.derecha.derecha.derecha = Nodo(diagnostico="Posible neumonía. Recomendación: Acudir a emergencias.")
+        # Si no hay suficientes recomendaciones, agregar algunas aleatorias
+        while len(recomendaciones) < 3:
+            cancion_random = random.choice(self.base_canciones)
+            if cancion_random not in recomendaciones and \
+               cancion_random.titulo != cancion_actual.titulo and \
+               cancion_random not in historial:
+                recomendaciones.append(cancion_random)
         
-        return raiz
+        return recomendaciones[:3]  # Devolver máximo 3 recomendaciones
+
+class ReproductorMusica:
+    def __init__(self):
+        self.actual = None
+        self.primera = None
+        self.ultima = None
+        self.total_canciones = 0
+        self.historial = []
+        self.sistema_recomendacion = SistemaRecomendacion()
     
-    def diagnosticar(self):
-        nodo_actual = self.raiz
+    def agregar_cancion(self, titulo: str, artista: str, genero: str, duracion: int) -> None:
+        nueva_cancion = Cancion(titulo, artista, genero, duracion)
         
-        while nodo_actual.diagnostico is None:
-            respuesta = input(f"{nodo_actual.pregunta} (s/n): ").lower()
-            
-            if respuesta == 's':
-                nodo_actual = nodo_actual.derecha
-            elif respuesta == 'n':
-                nodo_actual = nodo_actual.izquierda
-            else:
-                print("Por favor, responde 's' para sí o 'n' para no.")
-                continue
+        if not self.primera:
+            self.primera = nueva_cancion
+            self.ultima = nueva_cancion
+            self.actual = nueva_cancion
+        else:
+            nueva_cancion.anterior = self.ultima
+            self.ultima.siguiente = nueva_cancion
+            self.ultima = nueva_cancion
+        
+        self.total_canciones += 1
+        print(f"Canción agregada: {nueva_cancion}")
+    
+    def eliminar_cancion(self, titulo: str) -> None:
+        if not self.primera:
+            print("No hay canciones en la lista")
+            return
+        
+        actual = self.primera
+        while actual:
+            if actual.titulo == titulo:
+                if actual == self.primera:
+                    self.primera = actual.siguiente
+                    if self.primera:
+                        self.primera.anterior = None
+                elif actual == self.ultima:
+                    self.ultima = actual.anterior
+                    if self.ultima:
+                        self.ultima.siguiente = None
+                else:
+                    actual.anterior.siguiente = actual.siguiente
+                    actual.siguiente.anterior = actual.anterior
                 
-        print("\nDIAGNÓSTICO PRELIMINAR:")
-        print(nodo_actual.diagnostico)
+                if self.actual == actual:
+                    self.actual = actual.siguiente or self.primera
+                
+                self.total_canciones -= 1
+                print(f"Canción eliminada: {actual}")
+                return
+            actual = actual.siguiente
+        
+        print(f"No se encontró la canción: {titulo}")
+    
+    def siguiente_cancion(self) -> Optional[Cancion]:
+        if not self.actual:
+            print("No hay canciones en la lista")
+            return None
+        
+        if self.actual.siguiente:
+            self.actual = self.actual.siguiente
+        else:
+            self.actual = self.primera
+        
+        self.historial.append(self.actual)
+        if len(self.historial) > 5:  # Mantener solo las últimas 5 canciones en el historial
+            self.historial.pop(0)
+        
+        print("\n________________________________________________________________")
+        print(f"Reproduciendo: {self.actual}")
+        self.mostrar_recomendaciones()
+        return self.actual
+    
+    def anterior_cancion(self) -> Optional[Cancion]:
+        if not self.actual:
+            print("No hay canciones en la lista")
+            return None
+        
+        if self.actual.anterior:
+            self.actual = self.actual.anterior
+        else:
+            self.actual = self.ultima
+        
+        print(f"Reproduciendo: {self.actual}")
+        self.mostrar_recomendaciones()
+        return self.actual
+    
+    def mostrar_recomendaciones(self):
+        if self.actual:
+            print("\nRecomendaciones basadas en tu música:")
+            recomendaciones = self.sistema_recomendacion.recomendar_canciones(self.actual, self.historial)
+            for i, cancion in enumerate(recomendaciones, 1):
+                print(f"{i}. {cancion}")
+    
+    def mostrar_playlist(self):
+        if not self.primera:
+            print("No hay canciones en la lista")
+            return
+        
+        print("\nPlaylist completa:")
+        actual = self.primera
+        while actual:
+            estado = "► " if actual == self.actual else "  "
+            print(f"{estado}{actual}")
+            actual = actual.siguiente
 
 # Ejemplo de uso
 def main():
-    print("Sistema de Diagnóstico Médico Básico")
-    print("=====================================")
-    print("Responde a las siguientes preguntas con 's' (sí) o 'n' (no)\n")
+    reproductor = ReproductorMusica()
     
-    sistema = ArbolDiagnostico()
-    sistema.diagnosticar()
+    # Agregar algunas canciones
+    reproductor.agregar_cancion("Tengo fe", "Feid", "Reggaeton", 136)
+    reproductor.agregar_cancion("Tusa", "Karol G", "Reggaeton", 194)
+    reproductor.agregar_cancion("Hasta el Amanecer", "Nicky Jam", "Reggaeton", 238)
+    
+    # Mostrar playlist inicial
+    reproductor.mostrar_playlist()
+    
+    # Probar navegación
+    print("\nProbando navegación:")
+    reproductor.siguiente_cancion()
+    reproductor.siguiente_cancion()
+
+    print("\n________________________________________________________________")
+    reproductor.anterior_cancion()
+    
+    print("\n________________________________________________________________")
+    
+    # Eliminar una canción
+    reproductor.eliminar_cancion("Tengo fe")
+    
+    # Mostrar playlist actualizada
+    reproductor.mostrar_playlist()
 
 if __name__ == "__main__":
     main()
