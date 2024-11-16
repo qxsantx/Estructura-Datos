@@ -84,7 +84,7 @@ class SistemaRecomendacion:
         """
         Genera recomendaciones basadas en la canción actual y el historial.
 
-        Args:
+        Args (argumentos):
             cancion_actual: Canción que se está reproduciendo actualmente
             historial: Lista de últimas canciones reproducidas
 
