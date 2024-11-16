@@ -1,5 +1,4 @@
 """
-Sistema de Reproductor Musical con Recomendaciones Inteligentes
 ------------------------------------------------------------
 Este módulo implementa un reproductor de música con sistema de recomendaciones
 basado en los géneros musicales y artistas. Incluye funcionalidades de
@@ -9,7 +8,6 @@ Características principales:
 - Gestión de playlist mediante lista doblemente enlazada
 - Sistema de recomendaciones basado en géneros y artistas
 - Historial de reproducción limitado a 5 canciones
-- Navegación O(1) entre canciones
 
 Autor: Santiago Mayorga
 Fecha: 16/11/2024
@@ -20,12 +18,12 @@ import random
 
 class Cancion:
     """
-    Clase que representa una canción en el sistema.
+    Clase canción
     
     Implementa una estructura de nodo para una lista doblemente enlazada,
     almacenando referencias a las canciones anterior y siguiente.
 
-    Attributes:
+    Atributos:
         titulo (str): Título de la canción
         artista (str): Nombre del artista
         genero (str): Género musical
@@ -38,7 +36,7 @@ class Cancion:
         """
         Inicializa una nueva instancia de Cancion.
 
-        Args:
+        Argunentos:
             titulo: Título de la canción
             artista: Nombre del artista
             genero: Género musical
@@ -52,12 +50,14 @@ class Cancion:
         self.anterior = None
     
     def __str__(self) -> str:
-        """Retorna una representación en string de la canción."""
+        """
+        Retorna una representación en string de la canción.
+        """
         return f"{self.titulo} - {self.artista} ({self.genero})"
 
 class SistemaRecomendacion:
     """
-    Sistema de recomendaciones musicales.
+    Sistema de recomendaciones
     
     Implementa un sistema simple de recomendaciones basado en géneros
     y artistas similares, utilizando una base de datos simulada.
@@ -84,7 +84,7 @@ class SistemaRecomendacion:
         """
         Genera recomendaciones basadas en la canción actual y el historial.
 
-        Args (argumentos):
+        argumentos:
             cancion_actual: Canción que se está reproduciendo actualmente
             historial: Lista de últimas canciones reproducidas
 
@@ -136,7 +136,7 @@ class ReproductorMusica:
         """
         Agrega una nueva canción al final de la playlist.
 
-        Args(argumentos):
+        argumentos:
             titulo: Título de la canción
             artista: Nombre del artista
             genero: Género musical
@@ -162,7 +162,7 @@ class ReproductorMusica:
         """
         Elimina una canción de la playlist por su título.
 
-        Args:
+        Argumentos:
             titulo: Título de la canción a eliminar
         """
         if not self.primera:
@@ -252,7 +252,7 @@ class ReproductorMusica:
                 print(f"{i}. {cancion}")
     
     def mostrar_playlist(self):
-        """Muestra todas las canciones en la playlist actual."""
+        """Muestra todas las canciones añadidas a la playlist ."""
         if not self.primera:
             print("No hay canciones en la lista")
             return
